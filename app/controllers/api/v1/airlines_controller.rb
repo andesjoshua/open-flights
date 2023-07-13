@@ -1,6 +1,7 @@
 module Api
     module V1
         class AirlinesController < ApplicationController
+            protect_from_forgery with: :null_session
             def index
                 airlines = Airline.all
 
@@ -10,14 +11,14 @@ module Api
             def show
                 airline = Airline.find_by(slug: params[:slug])
 
-                render json: AirlineSerializer.new(airlines, options).serialized_json
+                render json: AirlineSerializer.new(airline, options).serialized_json
             end
 
             def create
                 airline = Airline.new(airline_params)
 
                 if airline.save
-                    render json: AirlineSerializer.new(airlines).serialized_json
+                    render json: AirlineSerializer.new(airline).serialized_json
                 else
                     render json: { error: airline.errors.messages}, status: 422
                 end
@@ -27,13 +28,13 @@ module Api
                 airline = Airline.find_by(slug: params[:slug])
 
                 if airline.update(airline_params)
-                    render json: AirlineSerializer.new(airlines).serialized_json
+                    render json: AirlineSerializer.new(airline).serialized_json
                 else
                     render json: { error: airline.errors.messages}, status: 422
                 end
             end
 
-            def update
+            def destroy
                 airline = Airline.find_by(slug: params[:slug])
 
                 if airline.destroy
